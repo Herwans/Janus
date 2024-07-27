@@ -108,6 +108,38 @@ namespace Janus.LibTest.Helper
         }
 
         [Fact]
+        public void PatternsReplacer_RemoveSearchClean()
+        {
+            FileItem item = new() { CurrentName = "123ABC-789654antilope-" };
+            RegexHelper.Configuration configuration = new()
+            {
+                CaseSensitive = false,
+                SearchPattern = validPattern,
+                ReplacePattern = "azerty<current><g3><g1>",
+                KeepSearch = false,
+                IsRegex = true
+            };
+
+            RegexHelper.PatternsReplacer(item, configuration).NewName.Should().Be("azertyantilope-789654123ABC");
+        }
+
+        [Fact]
+        public void PatternsReplacer_RemoveSearch_ReplaceEmpty()
+        {
+            FileItem item = new() { CurrentName = "abcdefghijk" };
+            RegexHelper.Configuration configuration = new()
+            {
+                CaseSensitive = false,
+                SearchPattern = "ghi",
+                ReplacePattern = "",
+                KeepSearch = false,
+                IsRegex = false
+            };
+
+            RegexHelper.PatternsReplacer(item, configuration).NewName.Should().Be("abcdefjk");
+        }
+
+        [Fact]
         public void PatternsReplacer_IsNotRegex()
         {
             FileItem item = new() { CurrentName = "123ABC-789654antilope)" };

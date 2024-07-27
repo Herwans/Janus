@@ -24,6 +24,7 @@ namespace Janus.Lib.Helper
 
         public static FileItem PatternsReplacer(FileItem item, Configuration configuration)
         {
+            if (configuration.SearchPattern == "") return item;
             string extension = Path.GetExtension(item.CurrentName);
             string currentName = Path.GetFileNameWithoutExtension(item.CurrentName);
             string newName;
@@ -42,8 +43,14 @@ namespace Janus.Lib.Helper
                 string searchlessCurrent;
                 if (configuration.IsRegex) searchlessCurrent = Regex.Replace(currentName, configuration.SearchPattern, "");
                 else searchlessCurrent = currentName.Replace(configuration.SearchPattern, "");
-
-                newName = newName.Replace("<current>", searchlessCurrent);
+                if (configuration.ReplacePattern == "")
+                {
+                    newName = searchlessCurrent;
+                }
+                else
+                {
+                    newName = newName.Replace("<current>", searchlessCurrent);
+                }
             }
 
             if (configuration.IsRegex)

@@ -18,8 +18,8 @@ namespace Janus.Windows.ViewModel
         private bool caseSensitive;
         private bool removeSearch;
 
-        private string searchPattern;
-        private string replacePattern;
+        private string searchPattern = "";
+        private string replacePattern = "";
 
         private ICollectionView filteredFiles;
 
