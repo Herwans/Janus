@@ -1,10 +1,5 @@
 ﻿using Janus.Lib.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Janus.Lib.Helper
 {
@@ -31,7 +26,13 @@ namespace Janus.Lib.Helper
         {
             string extension = Path.GetExtension(item.CurrentName);
             string currentName = Path.GetFileNameWithoutExtension(item.CurrentName);
-            string newName = configuration.ReplacePattern;
+            string newName;
+            if (configuration.ReplacePattern == null
+                || configuration.ReplacePattern == "")
+                newName = currentName;
+            else
+                newName = configuration.ReplacePattern;
+
             if (configuration.KeepSearch)
             {
                 newName = newName.Replace("<current>", currentName);

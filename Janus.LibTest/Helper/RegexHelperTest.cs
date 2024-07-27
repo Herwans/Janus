@@ -168,5 +168,37 @@ namespace Janus.LibTest.Helper
             RegexHelper.PatternsReplacer(item, configuration3).NewName.Should().Be("abcb.mp4");
             RegexHelper.PatternsReplacer(item, configuration4).NewName.Should().Be("acb.mp4");
         }
+
+        [Fact]
+        public void PatternsReplacer_EmptyReplacer()
+        {
+            FileItem item = new() { CurrentName = "123ABC-789654antilope)" };
+            RegexHelper.Configuration configuration = new()
+            {
+                CaseSensitive = false,
+                SearchPattern = "antilope)",
+                ReplacePattern = "",
+                KeepSearch = true,
+                IsRegex = false
+            };
+
+            RegexHelper.PatternsReplacer(item, configuration).NewName.Should().Be("123ABC-789654antilope)");
+        }
+
+        [Fact]
+        public void PatternsReplacer_NullReplacer()
+        {
+            FileItem item = new() { CurrentName = "123ABC-789654antilope)" };
+            RegexHelper.Configuration configuration = new()
+            {
+                CaseSensitive = false,
+                SearchPattern = "antilope)",
+                ReplacePattern = null,
+                KeepSearch = true,
+                IsRegex = false
+            };
+
+            RegexHelper.PatternsReplacer(item, configuration).NewName.Should().Be("123ABC-789654antilope)");
+        }
     }
 }
