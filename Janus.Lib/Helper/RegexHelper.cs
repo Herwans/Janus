@@ -41,8 +41,8 @@ namespace Janus.Lib.Helper
             else
             {
                 string searchlessCurrent;
-                if (configuration.IsRegex) searchlessCurrent = Regex.Replace(currentName, configuration.SearchPattern, "");
-                else searchlessCurrent = currentName.Replace(configuration.SearchPattern, "");
+                if (configuration.IsRegex) searchlessCurrent = Regex.Replace(currentName, configuration.SearchPattern, "", configuration.CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase);
+                else searchlessCurrent = currentName.Replace(configuration.SearchPattern, "", !configuration.CaseSensitive, System.Globalization.CultureInfo.InvariantCulture);
                 if (configuration.ReplacePattern == "")
                 {
                     newName = searchlessCurrent;
@@ -58,7 +58,7 @@ namespace Janus.Lib.Helper
                 newName = PlaceholdersReplacer(newName, currentName, configuration);
             }
 
-            item.NewName = newName + extension;
+            item.NewName = newName.Trim() + extension;
             return item;
         }
 

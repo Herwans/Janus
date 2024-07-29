@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Janus.Lib.Helper;
 using Janus.Lib.Model;
-using System.Configuration;
 
 namespace Janus.LibTest.Helper
 {
@@ -231,6 +230,70 @@ namespace Janus.LibTest.Helper
             };
 
             RegexHelper.PatternsReplacer(item, configuration).NewName.Should().Be("123ABC-789654antilope)");
+        }
+
+        [Fact]
+        public void PatternsReplacer_CaseInsensitiveRemove()
+        {
+            FileItem item = new() { CurrentName = "azertyAnimals123" };
+            RegexHelper.Configuration configuration = new()
+            {
+                CaseSensitive = false,
+                SearchPattern = "animals",
+                ReplacePattern = "",
+                KeepSearch = false,
+                IsRegex = false
+            };
+
+            RegexHelper.PatternsReplacer(item, configuration).NewName.Should().Be("azerty123");
+        }
+
+        [Fact]
+        public void PatternsReplacer_CaseInsensitiveRemove_Regex()
+        {
+            FileItem item = new() { CurrentName = "azertyAnimals123" };
+            RegexHelper.Configuration configuration = new()
+            {
+                CaseSensitive = false,
+                SearchPattern = "animals",
+                ReplacePattern = "",
+                KeepSearch = false,
+                IsRegex = true
+            };
+
+            RegexHelper.PatternsReplacer(item, configuration).NewName.Should().Be("azerty123");
+        }
+
+        [Fact]
+        public void PatternsReplacer_CaseSensitiveRemove()
+        {
+            FileItem item = new() { CurrentName = "azertyAnimals123" };
+            RegexHelper.Configuration configuration = new()
+            {
+                CaseSensitive = true,
+                SearchPattern = "animals",
+                ReplacePattern = "",
+                KeepSearch = false,
+                IsRegex = false
+            };
+
+            RegexHelper.PatternsReplacer(item, configuration).NewName.Should().Be("azertyAnimals123");
+        }
+
+        [Fact]
+        public void PatternsReplacer_CaseSensitiveRemove_Regex()
+        {
+            FileItem item = new() { CurrentName = "azertyAnimals123" };
+            RegexHelper.Configuration configuration = new()
+            {
+                CaseSensitive = true,
+                SearchPattern = "animals",
+                ReplacePattern = "",
+                KeepSearch = false,
+                IsRegex = true
+            };
+
+            RegexHelper.PatternsReplacer(item, configuration).NewName.Should().Be("azertyAnimals123");
         }
     }
 }
