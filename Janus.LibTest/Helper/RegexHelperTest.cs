@@ -295,5 +295,21 @@ namespace Janus.LibTest.Helper
 
             RegexHelper.PatternsReplacer(item, configuration).NewName.Should().Be("azertyAnimals123");
         }
+
+        [Fact]
+        public void PatternsReplacer_EmptySearch()
+        {
+            FileItem item = new() { CurrentName = "azertyAnimals123" };
+            RegexHelper.Configuration configuration = new()
+            {
+                CaseSensitive = false,
+                SearchPattern = "",
+                ReplacePattern = "testing",
+                KeepSearch = false,
+                IsRegex = false
+            };
+
+            RegexHelper.PatternsReplacer(item, configuration).NewName.Should().Be("testing");
+        }
     }
 }

@@ -24,15 +24,9 @@ namespace Janus.Lib.Helper
 
         public static FileItem PatternsReplacer(FileItem item, Configuration configuration)
         {
-            if (configuration.SearchPattern == "") return item;
             string extension = Path.GetExtension(item.CurrentName);
             string currentName = Path.GetFileNameWithoutExtension(item.CurrentName);
-            string newName;
-            if (configuration.ReplacePattern == null
-                || configuration.ReplacePattern == "")
-                newName = currentName;
-            else
-                newName = configuration.ReplacePattern;
+            string newName = string.IsNullOrEmpty(configuration.ReplacePattern) ? currentName : configuration.ReplacePattern;
 
             if (configuration.KeepSearch)
             {
@@ -41,8 +35,18 @@ namespace Janus.Lib.Helper
             else
             {
                 string searchlessCurrent;
-                if (configuration.IsRegex) searchlessCurrent = Regex.Replace(currentName, configuration.SearchPattern, "", configuration.CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase);
-                else searchlessCurrent = currentName.Replace(configuration.SearchPattern, "", !configuration.CaseSensitive, System.Globalization.CultureInfo.InvariantCulture);
+                if (configuration.SearchPattern != "")
+                {
+                    if (configuration.IsRegex)
+                        searchlessCurrent = Regex.Replace(currentName, configuration.SearchPattern, "", configuration.CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase);
+                    else
+                        searchlessCurrent = currentName.Replace(configuration.SearchPattern, "", !configuration.CaseSensitive, System.Globalization.CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    searchlessCurrent = "";
+                }
+
                 if (configuration.ReplacePattern == "")
                 {
                     newName = searchlessCurrent;
