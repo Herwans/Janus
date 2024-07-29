@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -188,25 +189,32 @@ namespace Janus.Windows.ViewModel
                .Select(group => group.Key)
                .ToList();
 
-            if (alreadyExistsNewName.Any())
+            try
             {
-                throw new Exception($"Can't apply the changes, one or more item with the same name already exist.");
-            }
-
-            if (duplicateNewNames.Any())
-            {
-                throw new Exception($"Can't apply the changes, one or more item have the same new name.");
-            }
-
-            foreach (FileItem file in FilteredFiles)
-            {
-                if (file.CurrentName != file.NewName)
+                if (alreadyExistsNewName.Any())
                 {
-                    File.Move(
-                        Path.Combine(FolderPath, file.CurrentName),
-                        Path.Combine(FolderPath, file.NewName)
-                        );
+                    throw new Exception($"Can't apply the changes, one or more item with the same name already exist.");
                 }
+
+                if (duplicateNewNames.Any())
+                {
+                    throw new Exception($"Can't apply the changes, one or more item have the same new name.");
+                }
+
+                foreach (FileItem file in FilteredFiles)
+                {
+                    if (file.CurrentName != file.NewName)
+                    {
+                        File.Move(
+                            Path.Combine(FolderPath, file.CurrentName),
+                            Path.Combine(FolderPath, file.NewName)
+                            );
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error while replacing names", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             LoadFiles();
             filteredFiles.Refresh();
