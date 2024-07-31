@@ -82,8 +82,8 @@ namespace Janus.Lib.Helper
         public class Configuration
         {
             public bool CaseSensitive { get; set; }
-            public string ReplacePattern { get; set; }
-            public string SearchPattern { get; set; }
+            public string ReplacePattern { get; set; } = "";
+            public string SearchPattern { get; set; } = "";
             public bool KeepSearch { get; set; }
             public bool IsRegex { get; set; }
         }
