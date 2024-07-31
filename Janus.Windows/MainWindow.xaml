@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Janus.Windows"
         xmlns:vm="clr-namespace:Janus.Windows.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="1200"
+        Title="Janus" Height="800" Width="1200"
         Background="#1e1e1e"
         FontSize="16">
     <Window.DataContext>
