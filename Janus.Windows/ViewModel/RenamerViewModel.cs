@@ -15,75 +15,38 @@ namespace Janus.Windows.ViewModel
 {
     public partial class RenamerViewModel : ObservableObject
     {
-        private bool useRegex;
-        private bool caseSensitive;
-        private bool removeSearch;
-
-        private string searchPattern = "";
-        private string replacePattern = "";
-
-        private ICollectionView filteredFiles;
+        private readonly ICollectionView filteredFiles;
 
         [ObservableProperty]
-        private string folderPath;
+        private bool useRegex;
+        partial void OnUseRegexChanged(bool oldValue, bool newValue)
+            => ApplyReplacePattern();
+
+        [ObservableProperty]
+        private bool caseSensitive;
+        partial void OnCaseSensitiveChanged(bool oldValue, bool newValue)
+            => ApplyReplacePattern();
+
+        [ObservableProperty]
+        private bool removeSearch;
+        partial void OnRemoveSearchChanged(bool oldValue, bool newValue)
+            => ApplyReplacePattern();
+
+        [ObservableProperty]
+        private string searchPattern = "";
+        partial void OnSearchPatternChanged(string? oldValue, string newValue)
+            => ApplyReplacePattern();
+
+        [ObservableProperty]
+        private string replacePattern = "";
+        partial void OnReplacePatternChanged(string? oldValue, string newValue)
+            => ApplyReplacePattern();
+
+        [ObservableProperty]
+        private string folderPath = "";
 
         [ObservableProperty]
         private ObservableCollection<FileItem> files;
-
-        public bool UseRegex
-        {
-            get => useRegex;
-            set
-            {
-                useRegex = value;
-                OnPropertyChanged(nameof(UseRegex));
-                ApplyReplacePattern();
-            }
-        }
-
-        public bool CaseSensitive
-        {
-            get => caseSensitive;
-            set
-            {
-                caseSensitive = value;
-                OnPropertyChanged(nameof(CaseSensitive));
-                ApplyReplacePattern();
-            }
-        }
-
-        public bool RemoveSearch
-        {
-            get => removeSearch;
-            set
-            {
-                removeSearch = value;
-                OnPropertyChanged(nameof(RemoveSearch));
-                ApplyReplacePattern();
-            }
-        }
-
-        public string SearchPattern
-        {
-            get { return searchPattern; }
-            set
-            {
-                searchPattern = value;
-                OnPropertyChanged(nameof(SearchPattern));
-                ApplyReplacePattern();
-            }
-        }
-
-        public string ReplacePattern
-        {
-            get { return replacePattern; }
-            set
-            {
-                replacePattern = value;
-                OnPropertyChanged(nameof(ReplacePattern));
-                ApplyReplacePattern();
-            }
-        }
 
         public ICollectionView FilteredFiles
         {
@@ -95,7 +58,7 @@ namespace Janus.Windows.ViewModel
 
         public RenamerViewModel()
         {
-            Files = new ObservableCollection<FileItem>();
+            Files = [];
             filteredFiles = CollectionViewSource.GetDefaultView(Files);
             filteredFiles.Filter = FilterFiles;
 
@@ -116,16 +79,16 @@ namespace Janus.Windows.ViewModel
                 {
                     try
                     {
-                        return Regex.IsMatch(fileItem.CurrentName, SearchPattern, caseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase);
+                        return Regex.IsMatch(fileItem.CurrentName, SearchPattern, CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase);
                     }
                     catch (ArgumentException)
                     {
-                        return false; // En cas d'expression régulière invalide, ignorer le filtrage
+                        return false;
                     }
                 }
                 else
                 {
-                    return fileItem.CurrentName.Contains(SearchPattern, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
+                    return fileItem.CurrentName.Contains(SearchPattern, CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
                 }
             }
             return false;
@@ -146,7 +109,7 @@ namespace Janus.Windows.ViewModel
             Files.Clear();
             if (Directory.Exists(FolderPath))
             {
-                DirectoryInfo directoryInfo = new DirectoryInfo(FolderPath);
+                DirectoryInfo directoryInfo = new(FolderPath);
                 foreach (FileInfo file in directoryInfo.GetFiles())
                 {
                     Files.Add(new()
@@ -218,13 +181,6 @@ namespace Janus.Windows.ViewModel
             }
             LoadFiles();
             filteredFiles.Refresh();
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
